@@ -1,30 +1,29 @@
 const mineflayer = require('mineflayer');
 
 function createBot() {
-   const bot = mineflayer.createBot({
-    host: 'Teamo-rHp5.aternos.me',
-    port: 30758,
-    username: 'aternos24',
-    version: '26.1.2',
-    physicsEnabled: false
-});
+    const bot = mineflayer.createBot({
+        host: 'Teamo-rHp5.aternos.me',
+        port: 30758,
+        username: 'aternos24',
+        version: '26.1.2',
+        physicsEnabled: false
     });
 
     let loop;
 
-   bot.on('login', () => {
-    bot.physicsEnabled = false;
-    console.log('[NPC] Conexión establecida con el servidor de Minecraft.');
-});
+    bot.on('login', () => {
+        bot.physicsEnabled = false;
+        console.log('[NPC] Conexión establecida con el servidor de Minecraft.');
+    });
 
     bot.on('spawn', () => {
         console.log('[NPC] El bot ha aparecido correctamente en el mapa.');
-        bot.physicsEnabled = false;   // no envía paquetes de movimiento
+        bot.physicsEnabled = false;
 
         clearInterval(loop);
         loop = setInterval(() => {
             try {
-                bot.swingArm('right');   // acción mínima anti-inactividad
+                bot.swingArm('right');
                 console.log('[NPC] Acción anti-inactividad completada.');
             } catch (err) {
                 console.log(`[NPC] Error en el ciclo: ${err.message}`);
