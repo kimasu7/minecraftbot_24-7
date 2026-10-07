@@ -1,15 +1,23 @@
 const mineflayer = require('mineflayer');
 
+const BLOCKED = ['position', 'position_look', 'look', 'flying'];
+
 function createBot() {
     const bot = mineflayer.createBot({
         host: 'Teamo-rHp5.aternos.me',
         port: 30758,
         username: 'aternos24',
-        version: '26.1',
-        physicsEnabled: false
+        version: '26.1.2'
     });
 
     let loop;
+
+    // Bloquea los paquetes de movimiento antes de que salgan al servidor
+    const originalWrite = bot._client.write.bind(bot._client);
+    bot._client.write = (name, params) => {
+        if (BLOCKED.includes(name)) return;
+        return originalWrite(name, params);
+    };
 
     bot.on('login', () => {
         bot.physicsEnabled = false;
