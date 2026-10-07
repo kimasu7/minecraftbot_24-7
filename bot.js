@@ -5,7 +5,7 @@ function createBot() {
         host: 'Teamo-rHp5.aternos.me',
         port: 30758,
         username: 'aternos24',
-        version: '26.3',
+        version: '26.2',
         physicsEnabled: false
     });
 
