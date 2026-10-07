@@ -5,7 +5,7 @@ function createBot() {
         host: 'Teamo-rHp5.aternos.me', // <--- REEMPLAZA ESTO POR LA IP DE TU SERVER
         port: 30758,                // Puerto predeterminado de Minecraft
         username: 'aternos24',    // Nombre genérico del bot/NPC dentro del juego
-        version: '1.21.4'             // Autodetecta la versión exacta del servidor (1.8 a 1.21+)
+        version: '26.1.2'             // Autodetecta la versión exacta del servidor (1.8 a 1.21+)
     });
 
     bot.on('spawn', () => {
