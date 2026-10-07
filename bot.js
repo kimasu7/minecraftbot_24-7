@@ -2,72 +2,40 @@ const mineflayer = require('mineflayer');
 
 function createBot() {
     const bot = mineflayer.createBot({
-        host: 'Teamo-rHp5.aternos.me', // <--- REEMPLAZA ESTO POR LA IP DE TU SERVER
-        port: 30758,                // Puerto predeterminado de Minecraft
-        username: 'aternos24',    // Nombre genérico del bot/NPC dentro del juego
-        version: '26.1.2'             // Autodetecta la versión exacta del servidor (1.8 a 1.21+)
+        host: 'Teamo-rHp5.aternos.me',
+        port: 30758,
+        username: 'aternos24',
+        version: '26.1.2'
     });
-    bot.on('kicked', (reason) => console.log('[NPC] Expulsado:', JSON.stringify(reason)));
 
-bot._client.on('error', (e) => console.log('[NPC] Error de cliente:', e.message));
-    
+    let loop;
+
+    bot.on('login', () => console.log('[NPC] Conexión establecida con el servidor de Minecraft.'));
 
     bot.on('spawn', () => {
-        console.log(`[NPC] El bot ha aparecido correctamente en el mapa.`);
-        // Si tu servidor No-Premium requiere contraseña, descomenta la línea de abajo:
-        // setTimeout(() => bot.chat('/login erickJKN'), 4000);
-    });
+        console.log('[NPC] El bot ha aparecido correctamente en el mapa.');
+        bot.physicsEnabled = false;   // no envía paquetes de movimiento
 
-    bot.on('login', () => {
-        console.log(`[NPC] Conexión establecida con el servidor de Minecraft.`);
-    });
-
-    // Rutina automatizada del NPC: Buscar cofre, interactuar, cerrar y saltar (Cada 45 segundos)
-    setInterval(async () => {
-        if (!bot || !bot.entity) return;
-
-        try {
-            // 1. Localizar el bloque de cofre en un radio de 5 bloques
-            const chestBlock = bot.findBlock({
-                matching: bot.registry.blocksByName.chest.id,
-                maxDistance: 5
-            });
-
-            if (chestBlock) {
-                console.log('[NPC] Interactuando con el contenedor cercano...');
-                
-                // 2. Abrir el contenedor (genera la animación y sonido físico en el servidor)
-                const chest = await bot.openChest(chestBlock);
-                console.log('[NPC] Contenedor abierto.');
-                
-                // Mantener la interfaz abierta durante 2 segundos simulando actividad de inventario
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // 3. Cerrar la interfaz del contenedor
-                chest.close();
-                console.log('[NPC] Contenedor cerrado.');
-            } else {
-                console.log('[NPC] Aviso: No se detectó ningún contenedor válido cerca.');
+        clearInterval(loop);
+        loop = setInterval(() => {
+            try {
+                bot.swingArm('right');   // acción mínima anti-inactividad
+                console.log('[NPC] Acción anti-inactividad completada.');
+            } catch (err) {
+                console.log(`[NPC] Error en el ciclo: ${err.message}`);
             }
+        }, 45000);
+    });
 
-            // 4. Ejecutar acción de salto físico para evitar la inactividad (Anti-AFK)
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            bot.setControlState('jump', true);
-            setTimeout(() => bot.setControlState('jump', false), 500);
-            console.log('[NPC] Acción anti-inactividad completada con éxito.');
+    bot.on('kicked', (reason) => console.log('[NPC] Expulsado:', JSON.stringify(reason)));
 
-        } catch (err) {
-            console.log(`[NPC] Error en el ciclo de ejecución: ${err.message}`);
-        }
-    }, 45000);
-
-    // Sistema de auto-reconexión segura tras expulsiones o reinicios del servidor
     bot.on('end', (reason) => {
+        clearInterval(loop);
         console.log(`[NPC] Conexión finalizada por: ${reason}. Reintentando en 25 segundos...`);
         setTimeout(createBot, 25000);
     });
 
-    bot.on('error', (err) => console.log(`[NPC] Error crítico de red detectado: ${err}`));
+    bot.on('error', (err) => console.log(`[NPC] Error: ${err.message}`));
 }
 
 createBot();
