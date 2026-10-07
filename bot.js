@@ -1,16 +1,21 @@
 const mineflayer = require('mineflayer');
 
 function createBot() {
-    const bot = mineflayer.createBot({
-        host: 'Teamo-rHp5.aternos.me',
-        port: 30758,
-        username: 'aternos24',
-        version: '26.1.2'
+   const bot = mineflayer.createBot({
+    host: 'Teamo-rHp5.aternos.me',
+    port: 30758,
+    username: 'aternos24',
+    version: '26.1.2',
+    physicsEnabled: false
+});
     });
 
     let loop;
 
-    bot.on('login', () => console.log('[NPC] Conexión establecida con el servidor de Minecraft.'));
+   bot.on('login', () => {
+    bot.physicsEnabled = false;
+    console.log('[NPC] Conexión establecida con el servidor de Minecraft.');
+});
 
     bot.on('spawn', () => {
         console.log('[NPC] El bot ha aparecido correctamente en el mapa.');
