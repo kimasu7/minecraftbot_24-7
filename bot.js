@@ -7,6 +7,10 @@ function createBot() {
         username: 'aternos24',    // Nombre genérico del bot/NPC dentro del juego
         version: '1.21.4'             // Autodetecta la versión exacta del servidor (1.8 a 1.21+)
     });
+    bot.on('kicked', (reason) => console.log('[NPC] Expulsado:', JSON.stringify(reason)));
+
+bot._client.on('error', (e) => console.log('[NPC] Error de cliente:', e.message));
+    
 
     bot.on('spawn', () => {
         console.log(`[NPC] El bot ha aparecido correctamente en el mapa.`);
